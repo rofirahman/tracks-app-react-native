@@ -1,39 +1,39 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, Input, Button } from 'react-native-elements'
+import { Context as AuthContext } from '../context/AuthContext'
+import { NavigationEvents } from 'react-navigation'
+import AuthForm from '../components/AuthForm'
 import Spacer from '../components/Spacer'
+import NavLink from '../components/NavLink'
 
 const SignupScreen = ({ navigation }) => {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const { state, signup, clearErrorMessage } = useContext(AuthContext)
 
     return (
         <View style={styles.container}>
             <View style={{ marginBottom: 200 }}>
-                <Spacer>
-                    <Text h3 style={{ marginBottom: 20, color: '#ffffff', fontWeight: 'bold' }}>Sign up for Tracker</Text>
-                </Spacer>
-                    <Input
-                        autoCorrect={false}
-                        autoCapitalize="none"
-                        value={email}
-                        onChangeText={setEmail}
-                        label="Email"
-                        labelStyle={{ color: 'white' }} inputStyle={{ color: 'white' }}
-                    />
-                <Spacer />
-                    <Input
-                        secureTextEntry
-                        autoCorrect={false}
-                        autoCapitalize="none"
-                        label="Password"
-                        value={password}
-                        onChangeText={setPassword}
-                        labelStyle={{ color: 'white' }} inputStyle={{ color: 'white' }}
-                    />
-                <Spacer>
-                    <Button title="Sign Up" buttonStyle={{ backgroundColor: '#ffffff'}} titleStyle={{ color: '#000000', fontWeight: 'bold' }} />
-                </Spacer>
+                <NavigationEvents
+                    // will focus is every time we navigate
+                    // to this screen
+                    // or the touchable blur this function is calling
+                    // onWillFocus={() => {}}
+                    // function when the screen completely focus
+                    // onDidFocus={() => {}}
+                    // when animation start over transition
+                    onWillBlur={clearErrorMessage}
+                    // when animation is completely done over transition
+                    // onDidBlur={() => {}}
+                />
+                <AuthForm
+                    headerText="Sign Up for Tracker"
+                    errorMessage={state.errorMessage}
+                    buttonText="Sign Up"
+                    onSubmit={signup}
+                />
+                <NavLink
+                    routeName="Signin"
+                    text="Already have an account? Sign in insted"
+                />
             </View>
         </View>
     );
