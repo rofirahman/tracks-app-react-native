@@ -32,7 +32,7 @@ const Map = (props) => {
 const mapHeight = Dimensions.get("window").height;
 const styles = StyleSheet.create({
     map: {
-        height: mapHeight,
+        height: mapHeight - 200,
     }
 });
 
