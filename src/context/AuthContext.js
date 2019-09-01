@@ -37,7 +37,7 @@ const signup = (dispatch) => async ({ email, password}) => {
     // make API request to sign up with email and password
     try {
         // if we sign up, modify our state, and we are authenticated
-        const response = await trackerApi.post('/signin', { email, password })
+        const response = await trackerApi.post('/signup', { email, password })
         await AsyncStorage.setItem('token', response.data.token)
 
         dispatch({ type: 'signin', payload: response.data.token })

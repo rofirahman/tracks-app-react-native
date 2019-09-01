@@ -1,45 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from 'react-native-elements'
 import Map from '../components/Map'
-import { SafeAreaView } from 'react-navigation'
-import * as Location from 'expo-location'
-import * as Permissions from 'expo-permissions'
+import { withNavigationFocus} from 'react-navigation'
+import { Context as LocationContext } from '../context/LocationContext'
+import useLocation from '../hooks/useLocation'
+import TrackForm from '../components/TrackForm'
+import { MaterialIcons } from '@expo/vector-icons'
 
-const TrackCreateScreen = (props) => {
-    const [err, setErr] = useState(null)
+const TrackCreateScreen = ({ isFocused }) => {
+    const { state: { recording }, addLocation } = useContext(LocationContext)
+    const callback = useCallback(location => {
+        addLocation(location, recording)
+    }, [recording])
+    const [err] = useLocation(isFocused || recording, callback)
 
-    const startWatching = async () => {
-        const { status } = await Permissions.askAsync(Permissions.LOCATION);
-        if (status !== 'granted') {
-            setErr({
-                errorMessage: 'Permission to access location was denied',
-            });
-        }
-        await Location.watchPositionAsync({
-            accuracy: Location.Accuracy.BestForNavigation,
-            timeInterval: 1000,
-            distanceInterval: 10
-        }, (location) => {
-            console.log(location)
-        })
-    }
-
-    useEffect(() => {
-        startWatching()
-    }, [])
 
     return (
-        <SafeAreaView forceInset={{ top: 'always' }}>
-            <Text h2 h2Style={{ marginLeft: 20 }}>Create Track</Text>
+            <View>
             <Map />
             { err ? <Text>Please enable location services</Text> : null }
-        </SafeAreaView>
+            <TrackForm />
+            </View>
     );
+}
+
+TrackCreateScreen.navigationOptions = {
+    title: 'Add Track',
+    tabBarIcon: <MaterialIcons name="add-location" size={28} />
 }
 
 const styles = StyleSheet.create({
 
 });
 
-export default TrackCreateScreen;
+export default withNavigationFocus(TrackCreateScreen);
